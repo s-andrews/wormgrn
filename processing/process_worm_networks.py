@@ -25,7 +25,7 @@ def process_network (network_file, groups):
 
         edge_number = 0
         for line in nf:
-            (fromGene,toGene,weight) = line.strip().split("\t")
+            (fromGene,toGene,weight) = line.strip().split(" ")
 
             if not fromGene in groups[network_name]:
                 print(f"Didn't find {fromGene} in groups for {network_name}")
