@@ -59,7 +59,7 @@ def process_network (network_file, groups):
         elements.append(e)
 
 
-    with open(f"json/{network_name}.json","w") as jfile:
+    with open(f"www/json/{network_name}.json","w") as jfile:
         json.dump(elements,jfile)
 
 
