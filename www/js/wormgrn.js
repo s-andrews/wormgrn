@@ -1,6 +1,11 @@
 $(document).ready(function(){
 
-    network = "max_pfe"
+    // network = "max_pfe"
+    network = "small"
+
+    colour_brewer = ["#e41a1c","#377eb8","#4daf4a","#984ea3","#ff7f00","#ffff33","#a65628","#f781bf","#999999"];
+
+    deleted_nodes = [];
 
     $.getJSON("json/"+network+".json", function(data) {updateGraph(data)});
 
@@ -10,6 +15,32 @@ $(document).ready(function(){
 
     //     saveAs( imgBlob, 'collaborations.svg');
     // })
+
+
+    $("#search").click(function(){
+        // Put everything back
+        cy.add(deleted_nodes)
+
+        // Get the gene name from the search
+        var gene = $("#genename").val()
+
+        if (gene.length==0) {
+            return;
+        }
+        // Get the node for that gene
+        var genenode = cy.getElementById(gene);
+
+        // Make a node group
+        var connected_nodes = genenode;
+
+        // Add the upstream and downstream nodes
+        connected_nodes = connected_nodes.union(genenode.predecessors());
+        connected_nodes = connected_nodes.union(genenode.successors());
+
+        // Get the nodes not in this set and remove them
+        deleted_nodes = cy.elements().not(connected_nodes);
+        cy.remove(deleted_nodes);
+    });
 
 }); 
 
@@ -26,7 +57,7 @@ function updateGraph (network_data) {
             selector: 'node',
             style: {
             'background-color': '#B22',
-            // 'background-color': function(ele){if (ele.data('type')=="GroupLeader"){return "#B22"} else if (ele.data('type')=="Company"){return "#2B2"} return('#22B')},
+            'background-color': function(ele){return colour_brewer[ele.data('group')]},
             'label': 'data(id)',
             'shape': 'ellipse'
             }
