@@ -1,13 +1,13 @@
 $(document).ready(function(){
 
-    // network = "max_pfe"
-    network = "small"
+    $("#search").prop("disabled",true);
+
+    network = "max_pfe"
+    // network = "small"
 
     colour_brewer = ["#e41a1c","#377eb8","#4daf4a","#984ea3","#ff7f00","#ffff33","#a65628","#f781bf","#999999"];
 
-    deleted_nodes = [];
-
-    $.getJSON("json/"+network+".json", function(data) {updateGraph(data)});
+    $.getJSON("json/"+network+".json", function(data) {$("#search").prop("disabled",false);network_data = data});
 
     // Make the graph export work
     // $('#export').click(function() {
@@ -18,39 +18,56 @@ $(document).ready(function(){
 
 
     $("#search").click(function(){
-        // Put everything back
-        cy.add(deleted_nodes)
-
         // Get the gene name from the search
         var gene = $("#genename").val()
 
         if (gene.length==0) {
             return;
         }
-        // Get the node for that gene
-        var genenode = cy.getElementById(gene);
 
-        // Make a node group
-        var connected_nodes = genenode;
+        var elements = [];
+        var node_names = {};
 
-        // Add the upstream and downstream nodes
-        connected_nodes = connected_nodes.union(genenode.predecessors());
-        connected_nodes = connected_nodes.union(genenode.successors());
+        node_names[gene] = 1;
 
-        // Get the nodes not in this set and remove them
-        deleted_nodes = cy.elements().not(connected_nodes);
-        cy.remove(deleted_nodes);
+        // Go through the nodes.  We need all edges mentioning
+        // this search
+        for (i=0;i<network_data.length;i++) {
+            if (network_data[i]["group"] == "edges") {
+                if (network_data[i]["data"]["source"]==gene) {
+                    elements.push(network_data[i]);
+                    node_names[network_data[i]["data"]["target"]] = 1;
+                }
+                else if (network_data[i]["data"]["target"]==gene) {
+                    elements.push(network_data[i]);
+                    node_names[network_data[i]["data"]["source"]] = 1;
+                }
+            }
+        }
+
+        // Now do a second pass looking for the nodes we need.
+        for (i=0;i<network_data.length;i++) {
+            if (network_data[i]["group"] == "nodes") {
+                if (network_data[i]["data"]["id"] in node_names) {
+                    console.log(network_data[i]);
+                    elements.unshift(network_data[i]);
+                }
+            }
+        }
+
+        updateGraph(elements)
+
     });
 
 }); 
 
-function updateGraph (network_data) {
+function updateGraph (data) {
 
     cy = cytoscape({
 
         container: document.getElementById('network'), // container to render in
         
-        elements: network_data,
+        elements: data,
         
         style: [ // the stylesheet for the graph
         {
@@ -66,7 +83,8 @@ function updateGraph (network_data) {
         {
             selector: 'edge',
             style: {
-            // 'width': "mapData(weight,1,"+maxWeight+",1,10)",
+            'target-arrow-shape': function(ele){if (ele.data('weight')>0){return 'triangle'}else{return 'tee'}},
+                // 'width': "mapData(weight,1,"+maxWeight+",1,10)",
             // 'line-color': "mapData(weight,1,"+maxWeight+",#CCC,#222)",
             'curve-style': 'bezier'
             }
@@ -75,8 +93,8 @@ function updateGraph (network_data) {
         
         layout: {
             name: 'grid',
-            randomize: true,
-            animate: true, 
+            randomize: false,
+            animate: false, 
             idealEdgeLength: 250,
             nodeRepulsion: 2048
         }
