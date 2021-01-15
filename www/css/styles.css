@@ -1,5 +1,19 @@
 #network {
     height: 100vh;
     width: 100vw;
-    background-color: lavender;
+    background-color: lavender;    
+}
+
+#filters {
+    position: fixed;
+    top: 2em;
+    left: 2em;
+    background-color: lightgray;
+    z-index: 999;
+    padding: 1em;
+    border-radius: 1em;
+}
+
+#warning {
+    color: darkred;
 }

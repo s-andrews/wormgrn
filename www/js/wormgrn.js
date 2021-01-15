@@ -21,6 +21,9 @@ $(document).ready(function(){
         // Get the gene name from the search
         var gene = $("#genename").val()
 
+        // Clear any previous errors
+        $("#warning").text("");
+
         if (gene.length==0) {
             return;
         }
@@ -34,6 +37,7 @@ $(document).ready(function(){
         node_names[gene] = 1;
 
         var node_counts = 1;
+        var found_query = false;
 
 
         // We need to know the edge weight range.  Eventually
@@ -69,11 +73,13 @@ $(document).ready(function(){
                 }
 
                 if (network_data[i]["data"]["source"]==gene) {
+                    found_query = true;
                     elements.push(network_data[i]);
                     node_names[network_data[i]["data"]["target"]] = 1;
                     node_counts++;
                 }
                 else if (network_data[i]["data"]["target"]==gene) {
+                    found_query = true;
                     elements.push(network_data[i]);
                     node_names[network_data[i]["data"]["source"]] = 1;
                     node_counts++;
@@ -81,9 +87,15 @@ $(document).ready(function(){
             }
         }
 
+        console.log("Found "+node_counts+" for "+gene);
+
+        if (!found_query) {
+            $("#warning").text("Couldn't find "+gene);
+            return;
+        }
+
         if (node_counts > 100) {
-            // TODO: Put up an error
-            console.log("Not drawing "+gene+" as "+node_counts+" nodes found");
+            $("#warning").text("Not drawing "+gene+" as "+node_counts+" nodes found");
             return;
         }
 
