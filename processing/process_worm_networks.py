@@ -50,6 +50,8 @@ def process_network (network_file, groups):
                     "type":"active" if float(weight)>0 else "repressive"
                     }})
 
+            edge_number += 1
+
     elements = []
 
     for n in nodes:
