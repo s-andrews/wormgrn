@@ -27,6 +27,8 @@ $(document).ready(function(){
 
         var elements = [];
         var node_names = {};
+        var min_weight = 0;
+        var max_weight = 0;
 
         node_names[gene] = 1;
 
@@ -36,10 +38,27 @@ $(document).ready(function(){
             if (network_data[i]["group"] == "edges") {
                 if (network_data[i]["data"]["source"]==gene) {
                     elements.push(network_data[i]);
+
+                    if (min_weight = 0 | Math.abs(network_data[i]["data"]["weight"]) < min_weight) {
+                        min_weight = Math.abs(network_data[i]["data"]["weight"]);
+                    }
+                    if (Math.abs(network_data[i]["data"]["weight"]) > max_weight) {
+                        max_weight = Math.abs(network_data[i]["data"]["weight"]);
+                    }
+
                     node_names[network_data[i]["data"]["target"]] = 1;
                 }
                 else if (network_data[i]["data"]["target"]==gene) {
                     elements.push(network_data[i]);
+
+                    if (min_weight = 0 | Math.abs(network_data[i]["data"]["weight"]) < min_weight) {
+                        min_weight = Math.abs(network_data[i]["data"]["weight"]);
+                    }
+                    if (Math.abs(network_data[i]["data"]["weight"]) > max_weight) {
+                        max_weight = Math.abs(network_data[i]["data"]["weight"]);
+                    }
+
+
                     node_names[network_data[i]["data"]["source"]] = 1;
                 }
             }
@@ -49,20 +68,18 @@ $(document).ready(function(){
         for (i=0;i<network_data.length;i++) {
             if (network_data[i]["group"] == "nodes") {
                 if (network_data[i]["data"]["id"] in node_names) {
-                    console.log(network_data[i]);
                     elements.unshift(network_data[i]);
                 }
             }
         }
 
-        updateGraph(elements)
+        updateGraph(elements, min_weight, max_weight);
 
     });
 
 }); 
 
-function updateGraph (data) {
-
+function updateGraph (data, min_weight, max_weight) {
     cy = cytoscape({
 
         container: document.getElementById('network'), // container to render in
@@ -83,9 +100,9 @@ function updateGraph (data) {
         {
             selector: 'edge',
             style: {
-            'target-arrow-shape': function(ele){if (ele.data('weight')>0){return 'triangle'}else{return 'tee'}},
+            'target-arrow-shape': function(ele){if (ele.data('type')=="active"){return 'triangle'}else{return 'tee'}},
                 // 'width': "mapData(weight,1,"+maxWeight+",1,10)",
-            // 'line-color': "mapData(weight,1,"+maxWeight+",#CCC,#222)",
+            'line-color': "mapData(weight,"+min_weight+","+max_weight+",#CCC,#222)",
             'curve-style': 'bezier'
             }
         }
