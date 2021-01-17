@@ -113,6 +113,8 @@ function run_search() {
 
     if (!found_query) {
         $("#warning").text("No interactions found");
+        // Empty the graph
+        updateGraph([])
         // Make the search button active
         $("#search").prop("disabled",false);
 
@@ -121,6 +123,9 @@ function run_search() {
 
     if (node_counts > 100) {
         $("#warning").text("Not drawing "+gene+" as "+node_counts+" nodes found");
+
+        // Empty the graph
+        updateGraph([])
         // Make the search button active
         $("#search").prop("disabled",false);
         return;
@@ -144,7 +149,7 @@ function run_search() {
         }
     }
 
-    updateGraph(elements, min_weight, mean_weight);
+    updateGraph(elements);
 
     // Make the search button active
     $("#search").prop("disabled",false);
@@ -164,6 +169,10 @@ function loadNetwork () {
         gene_suggestions = []
         network_data = data;
         var edge_weight_count = 0;
+
+        // Reset the existing limits
+        min_weight = 0;
+        mean_weight = 0;
 
         // We need to know the edge weight range.  
         // console.log("Iterating through elements")
@@ -207,7 +216,7 @@ function loadNetwork () {
     });
 }
 
-function updateGraph (data, min_weight, max_weight) {
+function updateGraph (data) {
     cy = cytoscape({
 
         container: document.getElementById('network'), // container to render in
@@ -230,7 +239,7 @@ function updateGraph (data, min_weight, max_weight) {
             style: {
             'target-arrow-shape': function(ele){if (ele.data('type')=="active"){return 'triangle'}else{return 'tee'}},
                 // 'width': "mapData(weight,1,"+maxWeight+",1,10)",
-            'line-color': "mapData(weight,"+min_weight+","+max_weight+",#CCC,#222)",
+            'line-color': "mapData(weight,"+min_weight+","+mean_weight+",#CCC,#222)",
             'curve-style': 'bezier'
             }
         }
