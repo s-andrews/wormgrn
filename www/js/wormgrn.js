@@ -154,6 +154,12 @@ function run_search() {
 }
 
 function loadNetwork () {
+
+
+    // Hide all of the groups until we've seen then
+    var seen_groups = {}
+    $(".colourgroup").hide();
+
     $.getJSON("json/"+current_network+".json", function(data) {
         // console.log("Loaded "+current_network);
         gene_suggestions = []
@@ -174,6 +180,12 @@ function loadNetwork () {
             else {
                 // It's a node
                 gene_suggestions.push(network_data[i]["data"]["id"]);
+                // Check to see if we need to enable a group
+                var group_number = network_data[i]["data"]["group"]
+                if (! (group_number in seen_groups)) {
+                    $('#group'+group_number).show();
+                    seen_groups[group_number] = 1
+                }
             }
         }
 
