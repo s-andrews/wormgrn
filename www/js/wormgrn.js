@@ -16,7 +16,6 @@ $(document).ready(function(){
         minLength: 1,
         events: {
             search: function(qry, callback) {
-                console.log("Autocomplete running for "+qry);
                 suggestions = []
                 for (i in gene_suggestions) {
                     var thisName = gene_suggestions[i]
