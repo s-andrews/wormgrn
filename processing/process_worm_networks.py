@@ -17,6 +17,9 @@ def process_network (network_file, groups):
 
     print(f"Name is {network_name}")
 
+    if network_name == "qPCR":
+            groups[network_name] = {}
+
     nodes = {}
     edges = []
 
@@ -28,12 +31,20 @@ def process_network (network_file, groups):
             (fromGene,toGene,weight) = line.strip().split(" ")
 
             if not fromGene in groups[network_name]:
-                print(f"Didn't find {fromGene} in groups for {network_name}")
-                continue
+                # qPCR doesn't have groups
+                if network_name == 'qPCR':
+                    groups[network_name][fromGene] = 0
+                else:
+                    print(f"Didn't find {fromGene} in groups for {network_name}")
+                    continue
 
             if not toGene in groups[network_name]:
-                print(f"Didn't find {toGene} in groups for {network_name}")
-                continue
+                # qPCR doesn't have groups
+                if network_name == 'qPCR':
+                    groups[network_name][toGene] = 0
+                else:
+                    print(f"Didn't find {toGene} in groups for {network_name}")
+                    continue
 
             if not fromGene in nodes:
                 nodes[fromGene] = {"group":"nodes","data":{"id":fromGene, "group":groups[network_name][fromGene]}}
