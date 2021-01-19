@@ -4,9 +4,15 @@ import json
 def main():
     groups = read_groups()
 
-    network_files = glob.glob("raw_data/*_network.txt")
+    network_files = glob.glob("raw_data/q*_network.txt")
 
     for nf in network_files:
+        print("NF="+nf)
+        # We do different processing to the qPCR network
+        if nf == "raw_data\\qPCR_network.txt":
+            process_qpcr_network(nf)
+            continue
+
         print(f"Reading network {nf}")
         process_network(nf,groups)
 
@@ -16,9 +22,6 @@ def process_network (network_file, groups):
     network_name = network_file.split("\\")[-1].replace("_network.txt","")
 
     print(f"Name is {network_name}")
-
-    if network_name == "qPCR":
-            groups[network_name] = {}
 
     nodes = {}
     edges = []
@@ -75,6 +78,72 @@ def process_network (network_file, groups):
     with open(f"www/json/{network_name}.json","w") as jfile:
         json.dump(elements,jfile)
 
+
+
+def process_qpcr_network (network_file):
+    network_name = network_file.split("\\")[-1].replace("_network.txt","")
+
+    print(f"qPCR name is {network_name}")
+
+    nodes = {}
+    edges = []
+
+    with open(network_file) as nf:
+        nf.readline() # header
+
+        edge_number = 0
+        for line in nf:
+            sections = line.strip().split("\t")
+            if len(sections) == 4:
+                regulator = sections[0]
+                target = sections[1]
+                if sections[2].startswith("<"):
+                    rvalue = 0.001
+                else:
+                    rvalue = float(sections[2])
+                if sections[3].startswith("<"):
+                    pvalue = 0.001
+                else:
+                    pvalue = float(sections[3])
+
+            elif len(sections) == 3:
+                # We're missing pvalues for some reason
+                regulator = sections[0]
+                target = sections[1]
+                rvalue = float(sections[2])
+                pvalue = 1
+
+            if not regulator in nodes:
+                nodes[regulator] = {"group":"nodes","data":{"id":regulator, "group":"regulator"}}
+
+            if not target in nodes:
+                nodes[target] = {"group":"nodes","data":{"id":target, "group":"target"}}
+
+            edges.append({
+                "group":"edges",
+                "data":{
+                    "id":f"e{edge_number}",
+                    "source":regulator, 
+                    "target":target, 
+                    "rvalue":rvalue,
+                    "absrvalue":abs(rvalue), 
+                    "pvalue":pvalue,
+                    "type":"active" if float(rvalue)>0 else "repressive"
+                    }})
+
+            edge_number += 1
+
+    elements = []
+
+    for n in nodes:
+        elements.append(nodes[n])
+
+    for e in edges:
+        elements.append(e)
+
+
+    with open(f"qpcr/json/{network_name}.json","w") as jfile:
+        json.dump(elements,jfile)
 
 
 
