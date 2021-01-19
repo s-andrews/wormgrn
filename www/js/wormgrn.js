@@ -203,14 +203,6 @@ function loadNetwork () {
 
         mean_weight = mean_weight*10;
 
-
-        // For the qPCR network we are using correlation values
-        // so we'll just hard code from 0-1
-        if (current_network == "qPCR") {
-            min_weight = 0
-            mean_weight = 1
-        }
-
         run_search();
 
     });
