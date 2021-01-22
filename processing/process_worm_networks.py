@@ -4,7 +4,7 @@ import json
 def main():
     groups = read_groups()
 
-    network_files = glob.glob("raw_data/q*_network.txt")
+    network_files = glob.glob("raw_data/*_network.txt")
 
     for nf in network_files:
         print("NF="+nf)
@@ -94,24 +94,17 @@ def process_qpcr_network (network_file):
         edge_number = 0
         for line in nf:
             sections = line.strip().split("\t")
-            if len(sections) == 4:
-                regulator = sections[0]
-                target = sections[1]
-                if sections[2].startswith("<"):
-                    rvalue = 0.001
-                else:
-                    rvalue = float(sections[2])
-                if sections[3].startswith("<"):
-                    pvalue = 0.001
-                else:
-                    pvalue = float(sections[3])
-
-            elif len(sections) == 3:
-                # We're missing pvalues for some reason
-                regulator = sections[0]
-                target = sections[1]
+            regulator = sections[0]
+            target = sections[1]
+            if sections[2].startswith("<"):
+                rvalue = 0.001
+            else:
                 rvalue = float(sections[2])
-                pvalue = 1
+            if sections[3].startswith("<"):
+                pvalue = 0.001
+            else:
+                pvalue = float(sections[3])
+
 
             if not regulator in nodes:
                 nodes[regulator] = {"group":"nodes","data":{"id":regulator, "group":"regulator"}}
