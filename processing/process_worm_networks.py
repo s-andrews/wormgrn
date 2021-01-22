@@ -94,8 +94,8 @@ def process_qpcr_network (network_file):
         edge_number = 0
         for line in nf:
             sections = line.strip().split("\t")
-            regulator = sections[0]
-            target = sections[1]
+            regulator = sections[1]
+            target = sections[0]
             if sections[2].startswith("<"):
                 rvalue = 0.001
             else:
