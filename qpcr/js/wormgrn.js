@@ -133,7 +133,7 @@ function run_search() {
         return;
     }
 
-    if (node_counts > 100) {
+    if (node_counts > 150) {
         $("#warning").text("Not drawing "+gene+" as "+node_counts+" nodes found");
 
         // Empty the graph

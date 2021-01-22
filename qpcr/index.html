@@ -25,23 +25,17 @@
             <p><label for="genename">Find Regulator</label> <input id="genename" class="form-control basicAutoComplete" type="text" autocomplete="off"></p>
             <p><label for="rvalue">Correlation (<span id="currvalue">0.000</span>)</label> <input id="rvalue" class="form-control" type="range" min=0 max=100 value=0></p>
             <p><label for="pvalue">P-value (<span id="curpvalue">1.000</span>)</label> <input id="pvalue" class="form-control" type="range" min=0 max=100 value=0></p>
-            <p><button id="search" class="form-control">Search</button></p>
+            <p><button id="search" class="form-control btn-primary" disabled>Search</button></p>
             <p id="warning"></p>
         </div>
 
         <div id="groups">
-            <h2>Groups</h2>
-            <ul>
-                <li class="colourgroup" id="group0">0</li>
-                <li class="colourgroup" id="group1">1</li>
-                <li class="colourgroup" id="group2">2</li>
-                <li class="colourgroup" id="group3">3</li>
-                <li class="colourgroup" id="group4">4</li>
-                <li class="colourgroup" id="group5">5</li>
-                <li class="colourgroup" id="group6">6</li>
-                <li class="colourgroup" id="group7">7</li>
-                <li class="colourgroup" id="group8">8</li>
-            </ul>
+            <h4>Edge Colour</h4>
+            <p>R=1</p>
+            <div id="gradient"></div>
+            <p>R=0</p>
+
+
         </div>
 
         <div id="network">
