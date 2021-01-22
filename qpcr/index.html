@@ -23,8 +23,8 @@
         <div id="filters">
             <h2>Filters</h2>
             <p><label for="genename">Find Regulator</label> <input id="genename" class="form-control basicAutoComplete" type="text" autocomplete="off"></p>
-            <p><label for="rvalue">Correlation</label> <input id="rvalue" class="form-control" type="range" min=0 max=100 value=0></p>
-            <p><label for="pvalue">P-value</label> <input id="pvalue" class="form-control" type="range" min=0 max=100 value=0></p>
+            <p><label for="rvalue">Correlation (<span id="currvalue">0.000</span>)</label> <input id="rvalue" class="form-control" type="range" min=0 max=100 value=0></p>
+            <p><label for="pvalue">P-value (<span id="curpvalue">1.000</span>)</label> <input id="pvalue" class="form-control" type="range" min=0 max=100 value=0></p>
             <p><button id="search" class="form-control">Search</button></p>
             <p id="warning"></p>
         </div>

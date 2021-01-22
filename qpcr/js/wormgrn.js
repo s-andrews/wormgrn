@@ -38,8 +38,37 @@ $(document).ready(function(){
 
 
     $("#search").click(run_search);
+    $("#pvalue").change(get_p_value)
+    $("#rvalue").change(get_r_value)
 
 }); 
+
+function get_p_value () {
+       var pvalue_percent = $("#pvalue").val();
+       // The values run from 1 to 0.001
+       var pvalue_cutoff = (((100-pvalue_percent)/100)*0.999)+0.001;
+
+       console.log("Pvalue is "+pvalue_cutoff);
+
+        // Set the label on the slider
+        $("#curpvalue").text(pvalue_cutoff.toFixed(3))
+
+       return(pvalue_cutoff)
+}
+
+function get_r_value () {
+        // Now we can work out the rvalue cutoff from the position of the slider
+        var rvalue_percent = $("#rvalue").val();
+        var rvalue_cutoff = rvalue_percent/100;
+
+        // Update the number on the slider
+        $("#currvalue").text(rvalue_cutoff.toFixed(3))
+
+
+        return(rvalue_cutoff);
+    
+}
+
 
 function run_search() {
 
@@ -68,17 +97,10 @@ function run_search() {
     var node_counts = 1;
     var found_query = false;
 
-    // Now we can work out the rvalue cutoff from the position of the slider
-    var rvalue_percent = $("#rvalue").val();
-    var rvalue_cutoff = rvalue_percent/100;
-
-    // Now we can work out the pvalue cutoff from the position of the slider
-    var pvalue_percent = $("#pvalue").val();
+    var rvalue_cutoff = get_r_value();
 
     // The values run from 1 to 0.001
-    var pvalue_cutoff = (((100-pvalue_percent)/100)*0.999)+0.001;
-
-    console.log("Rvalue cutoff is "+rvalue_cutoff+" pvalue cutoff is "+pvalue_cutoff);
+    var pvalue_cutoff = get_p_value();
 
     // Go through the nodes.  We need all edges mentioning
     // this search
@@ -194,7 +216,7 @@ function updateGraph (data) {
             style: {
             'target-arrow-shape': function(ele){if (ele.data('type')=="active"){return'triangle'}else{return 'tee'}},
                 // 'width': "mapData(weight,1,"+maxWeight+",1,10)",
-            'line-color': "mapData(absrvalue,0,1,#CCC,#222)",
+            'line-color': "mapData(absrvalue,0,1,#EEE,#666)",
             'curve-style': 'bezier'
             }
         }
