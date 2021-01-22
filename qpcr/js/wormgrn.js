@@ -98,8 +98,6 @@ function run_search() {
     var found_query = false;
 
     var rvalue_cutoff = get_r_value();
-
-    // The values run from 1 to 0.001
     var pvalue_cutoff = get_p_value();
 
     // Go through the nodes.  We need all edges mentioning
@@ -158,7 +156,14 @@ function run_search() {
 
         if (network_data[i]["group"] == "nodes") {
             if (network_data[i]["data"]["id"] in node_names) {
+                if (network_data[i]["data"]["id"] == gene) {
+                    network_data[i]["data"]["type"]="regulator";
+                }
+                else {
+                    network_data[i]["data"]["type"]="target";
+                }
                 elements.unshift(network_data[i]);
+
             }
         }
     }
@@ -197,7 +202,6 @@ function updateGraph (data) {
     cy = cytoscape({
 
         container: document.getElementById('network'), // container to render in
-        
         elements: data,
         
         style: [ // the stylesheet for the graph
@@ -205,7 +209,7 @@ function updateGraph (data) {
             selector: 'node',
             style: {
             'background-color': '#B22',
-            'background-color': function(ele){if (ele.data('group')=="regulator"){return("red")}else{return("blue")}},
+            'background-color': function(ele){if (ele.data('type')=="regulator"){return("red")}else{return("blue")}},
             'label': 'data(id)',
             'shape': 'ellipse'
             }
@@ -214,10 +218,10 @@ function updateGraph (data) {
         {
             selector: 'edge',
             style: {
-            'target-arrow-shape': function(ele){if (ele.data('type')=="active"){return'triangle'}else{return 'tee'}},
-                // 'width': "mapData(weight,1,"+maxWeight+",1,10)",
-            'line-color': "mapData(absrvalue,0,1,#EEE,#666)",
-            'curve-style': 'bezier'
+                'target-arrow-shape': function(ele){if (ele.data('type')=="active"){return'triangle'}else{return 'tee'}},
+                'target-arrow-color': "mapData(absrvalue,0,1,#EEE,#666)",
+                'line-color': "mapData(absrvalue,0,1,#EEE,#666)",
+                'curve-style': 'bezier'
             }
         }
         ],
@@ -228,7 +232,9 @@ function updateGraph (data) {
             animate: false, 
             idealEdgeLength: 250,
             nodeRepulsion: 2048
-        }
+        },
+
+        wheelSensitivity: 0.01,
         
         });
 }
