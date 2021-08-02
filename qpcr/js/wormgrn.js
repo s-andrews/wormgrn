@@ -1,5 +1,15 @@
 $(document).ready(function(){
 
+    $("#showhelp").click(function(e){
+        e.preventDefault()
+        $("#help").show()
+    })
+
+    $("#closehelp").click(function(e){
+        e.preventDefault()
+        $("#help").hide()
+    })
+
     current_network = "qPCR";
     gene_suggestions = []
 

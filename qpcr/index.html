@@ -20,6 +20,37 @@
     </head>
     <body>
 
+
+        <div id="help">
+            <h2>Help</h2>
+            <p>
+                This webpage visualizes a gene interaction network based on 
+                Suriyalaksh et al., 2021 Gene Regulatory Network inference in long-lived <i>C. elegans</i> 
+                reveals modular properties that are predictive of novel ageing genes. 
+                This network is constructed based on high-throughput gene expression 
+                assays of 19 novel regulators, and to contextualise our findings 
+                age-1 and daf-16.  We used RNAi to decrease the expression of the 
+                regulators and measured their impacts on 177 genes related to ageing 
+                and metabolism. We then used PCC to construct a weighted, directed 
+                gene-interaction network.
+            </p>
+
+            <h3>Instructions</h3>
+            <ol>
+                <li>Type one of the following gene names in the "Find Regulator" box.
+                    age-1, ahcy-1, attf-3, b0336.3, c04f5.9, daf-16, dnj-11, f26a10.2, gei-17, gei-3, hmbx-1, hmg-1.2, isw-1, mgl-2, nduf-6, pqm-1, sdc-3, somi-1, sup-37, zgpa-1, zip-3</li>
+                <li>Select an absolute correlation value cutoff. Interactions that will be shown will have correlation values higher than the selected cutoff.</li>
+                <li>Choose a p-value cutoff. Interactions that will be shown will have p-values lower than the selected cutoff.</li>
+            </ol>
+            <p>
+                Some thresholds will generate interaction lists which are too large to
+                display.  In these cases you will see a warning message at the bottom 
+                of the filter box and you will need to increase the stringency of filtering
+                to allow the network to be drawn.
+            </p>
+            <p class="text-center"><button id="closehelp" type="button" class="btn btn-primary">Close</button></p>
+        </div>
+
         <div id="filters">
             <h2>Filters</h2>
             <p><label for="genename">Find Regulator</label> <input id="genename" class="form-control basicAutoComplete" type="text" autocomplete="off"></p>
@@ -27,6 +58,7 @@
             <p><label for="pvalue">P-value (<span id="curpvalue">1.000</span>)</label> <input id="pvalue" class="form-control" type="range" min=0 max=100 value=0></p>
             <p><button id="search" class="form-control btn-primary" disabled>Search</button></p>
             <p id="warning"></p>
+            <p class="text-center"><a id="showhelp" href="#">Help</a></p>
         </div>
 
         <div id="groups">
